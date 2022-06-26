@@ -1,27 +1,82 @@
-const CustomError = require('../error/CustomError');
-const userValidator = require('../validators/user.validator');
+const { CustomError } = require('../error');
+const { userService } = require('../services');
+const { userValidator, userQueryValidator } = require('../validators');
 
 module.exports = {
-
-
-    isNewUserValid: (req, res, next) => {
+    isUserPresent: async (req, res, next) => {
         try {
-            const {error, value} = userValidator.newUserValidator.validate(req.body);
+            const { id } = req.params;
 
-            if(error) {
-                throw new CustomError(error.details[0].message);
+            const user = await userService.findOneUser({ _id: id });
+            if (!user) {
+                return next(new CustomError('User not found'));
             }
 
-            console.log('________________')
-            console.log(value)
-            console.log('________________')
+            req.user = user;
+            next();
+        } catch (e) {
+            next(e);
+        }
+    },
+
+    isUserUniq: async (req, res, next) => {
+        try {
+            const { email } = req.body;
+
+            const user = await userService.findOneUser({ email });
+            if (user) {
+                return next(new CustomError(`User with email ${email} is exist`, 409));
+            }
+
+            req.user = user;
+            next();
+        } catch (e) {
+            next(e);
+        }
+    },
+
+    isUserValidForCreate: async (req, res, next) => {
+        try {
+            const { error, value } = userValidator.newUserValidator.validate(req.body);
+
+            if (error) {
+                return next(new CustomError(error.details[0].message));
+            }
 
             req.body = value;
+            next();
+        } catch (e) {
+            next(e);
+        }
+    },
 
-            next()
+    isUserValidForUpdate: async (req, res, next) => {
+        try {
+            const { error, value } = userValidator.updateUserValidator.validate(req.body);
+
+            if (error) {
+                return next(new CustomError(error.details[0].message));
+            }
+
+            req.body = value;
+            next();
+        } catch (e) {
+            next(e);
         }
-        catch (e) {
-            next(e)
+    },
+
+    isUserQueryValid: async (req, res, next) => {
+        try {
+            const { error, value } = userQueryValidator.findAll.validate(req.query);
+
+            if (error) {
+                return next(new CustomError(error.details[0].message));
+            }
+
+            req.query = value;
+            next();
+        } catch (e) {
+            next(e);
         }
-    }
-}
+    },
+};

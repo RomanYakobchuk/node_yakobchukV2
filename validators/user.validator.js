@@ -1,28 +1,17 @@
 const Joi = require('joi');
-const { PASSWORD_REGEX} = require('../constants/constant');
-const {emailValidator} = require("./share");
 
-const userSubScheme = {
-    name: Joi.string().alphanum().min(2).max(100).required(),
-    surname: Joi.string().alphanum().min(2).max(100).required(),
-    age: Joi.number().integer().min(1).max(130)
-}
-const testArraySubSchema = Joi.object({
-    car: Joi.boolean()
-})
+const { emailValidator, passwordValidator, ageValidator, nameValidator } = require("./common.validator");
 
 module.exports = {
     newUserValidator: Joi.object({
+        name: nameValidator.required(),
+        age: ageValidator.required(),
         email: emailValidator.required(),
-        ...userSubScheme,
-        password: Joi.string().regex(PASSWORD_REGEX).required()
+        password: passwordValidator.required(),
     }),
 
-    updateUserValidator: Joi.object(userSubScheme),
-
-
-    testValidator: Joi.object({
-        isAdult: Joi.boolean(),
-        array: Joi.array().items(testArraySubSchema).when('isAdult', {is: true, then: Joi.required()})
-    })
-}
+    updateUserValidator: Joi.object({
+        name: nameValidator,
+        age: ageValidator,
+    }),
+};

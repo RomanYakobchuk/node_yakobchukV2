@@ -1,76 +1,68 @@
-const User = require('../databases/User');
-const CustomError = require('../error/CustomError');
-
-async function updateUser(req, res, next){
-    try{
-        res.status(201).json('Users was created')
-    }
-    catch (e) {
-        next(e)
-    }
-}
-
-async function getAllUsers(req, res, next){
-    try{
-        const users = await User.find();
-
-        res.json(users)
-    }
-    catch (e) {
-        next(e)
-    }
-}
-
-async function getById(req, res, next){
-    try{
-        const {userId = ''} = req.params;
-
-        if(userId.length !== 24) {
-            throw new CustomError("Mongo Id is not valid", 403)
-        }
-
-        const user = await User.findOne({_id: userId});
-
-        if(!user) {
-            throw new CustomError(`Use with ID ${userId} is not found`, 404)
-        }
-
-
-        res.json(user)
-    }
-    catch (e) {
-        next(e)
-    }
-}
-
-async function createUser(req, res, next){
-    try{
-        const user = await User.create(req.body);
-
-        res.status(201).json(user)
-    }
-    catch (e) {
-        next(e)
-    }
-}
-
-async function deleteUser(req, res, next){
-    try{
-        const {userId = ''} = req.params;
-
-        await User.deleteOne({_id: userId})
-
-        res.status(201).json('Users was deleted')
-    }
-    catch (e) {
-        next(e)
-    }
-}
+const { userService, passwordService } = require('../services');
+const { userPresenter } = require('../presenters/user.presenter');
 
 module.exports = {
-    createUser,
-    updateUser,
-    deleteUser,
-    getAllUsers,
-    getById
-}
+    findUsers: async (req, res, next) => {
+        try {
+            const users = await userService.findUsers(req.query).exec();
+
+            const usersForResponse = users.map(u => userPresenter(u));
+
+            res.json(usersForResponse);
+        } catch (e) {
+            next(e);
+        }
+    },
+
+    createUser: async (req, res, next) => {
+        try {
+            const hash = await passwordService.hashPassword(req.body.password);
+
+            const newUser = await userService.createUser({ ...req.body, password: hash });
+
+            const userForResponse = userPresenter(newUser);
+
+            res.status(201).json(userForResponse);
+        } catch (e) {
+            next(e);
+        }
+    },
+
+    getUserById: async (req, res, next) => {
+        try {
+            const { user } = req;
+
+            const userForResponse = userPresenter(user);
+
+            res.json(userForResponse);
+        } catch (e) {
+            next(e);
+        }
+    },
+
+    updateUserById: async (req, res, next) => {
+        try {
+            const { id } = req.params;
+
+            const updatedUser = await userService.updateOneUser({ _id: id }, req.body);
+
+            const userForResponse = userPresenter(updatedUser);
+
+            res.status(201).json(userForResponse);
+        } catch (e) {
+            next(e);
+        }
+    },
+
+    deleteUserById: async (req, res, next) => {
+        try {
+            const { id } = req.params;
+
+            await userService.deleteOneUser({ _id: id })
+
+            res.sendStatus(204);
+        } catch (e) {
+            next(e);
+        }
+    },
+};

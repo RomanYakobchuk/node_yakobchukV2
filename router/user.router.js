@@ -1,13 +1,33 @@
-const userRouter = require('express').Router();
+const router = require('express').Router();
 
+const { userController } = require('../controllers');
+const { commonMiddleware, userMiddleware, authMiddleware } = require('../middleware');
 
-const userController = require('../controllers/user.controller');
-const userMdlwr = require('../middleware/user.middleware');
+router.get('/',
+    userMiddleware.isUserQueryValid,
+    userController.findUsers);
 
-userRouter.get('/', userController.getAllUsers);
-userRouter.post('/', userMdlwr.isNewUserValid, userController.createUser);
-userRouter.get('/:userId', userController.deleteUser);
-userRouter.get('/:userId', userController.updateUser);
-userRouter.get('/:userId', userController.getById);
+router.post('/',
+    userMiddleware.isUserValidForCreate,
+    userMiddleware.isUserUniq,
+    userController.createUser);
 
-module.exports = userRouter;
+router.get('/:id',
+    commonMiddleware.isIdValid,
+    userMiddleware.isUserPresent,
+    userController.getUserById);
+
+router.put('/:id',
+    commonMiddleware.isIdValid,
+    authMiddleware.checkAccessToken,
+    userMiddleware.isUserValidForUpdate,
+    userMiddleware.isUserPresent,
+    userController.updateUserById);
+
+router.delete('/:id',
+    commonMiddleware.isIdValid,
+    authMiddleware.checkAccessToken,
+    userMiddleware.isUserPresent,
+    userController.deleteUserById);
+
+module.exports = router;
