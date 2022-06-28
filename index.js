@@ -3,9 +3,9 @@ const express = require('express');
 const mongoose = require('mongoose');
 
 const { authRouter, userRouter } = require('./router');
-const { configs } = require('./constants');
+const { config } = require('./constants');
 
-mongoose.connect(configs.MONGO_URL);
+mongoose.connect(config.MONGO_URL);
 
 const index = express();
 index.use(express.json());
@@ -26,6 +26,6 @@ index.use((err, req, res, next) => {
         });
 });
 
-index.listen(configs.PORT, () => {
-    console.log(`Started on port ${configs.PORT}`);
+index.listen(config.PORT, () => {
+    console.log(`Started on port ${config.PORT}`);
 });
