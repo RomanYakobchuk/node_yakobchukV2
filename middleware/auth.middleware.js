@@ -4,12 +4,12 @@ const { CustomError } = require('../error');
 const { userService } = require('../services');
 const { authValidator } = require('../validators');
 const { tokenTypeEnum } = require('../enums');
-const { constants } = require('../constants');
+const { constant } = require('../constants');
 
 module.exports = {
     checkAccessToken: async (req, res, next) => {
         try {
-            const access_token = req.get(constants.AUTHORIZATION);
+            const access_token = req.get(constant.AUTHORIZATION);
 
             if (!access_token) {
                 return next(new CustomError('No token', 401));
@@ -33,7 +33,7 @@ module.exports = {
 
     checkRefreshToken: async (req, res, next) => {
         try {
-            const refresh_token = req.get(constants.AUTHORIZATION);
+            const refresh_token = req.get(constant.AUTHORIZATION);
 
             if (!refresh_token) {
                 return next(new CustomError('No token', 401));
@@ -42,6 +42,8 @@ module.exports = {
             checkToken(refresh_token, tokenTypeEnum.REFRESH);
 
             const tokenInfo = await OAuth.findOne({ refresh_token });
+
+            // console.log(tokenInfo)
 
             if (!tokenInfo) {
                 return next(new CustomError('Token not valid', 401));
