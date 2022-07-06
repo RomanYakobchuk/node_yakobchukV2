@@ -1,6 +1,7 @@
-const { passwordService } = require('../services');
+const { passwordService, emailService } = require('../services');
 const { generateAuthTokens } = require('../services/token.service');
 const { OAuth } = require('../dataBase');
+const { emailActionTypeEnum } = require('../enums');
 
 module.exports = {
     login: async (req, res, next) => {
@@ -12,6 +13,7 @@ module.exports = {
 
             const tokens = generateAuthTokens();
 
+
             await OAuth.create({
                 userId: _id,
                 ...tokens
@@ -21,6 +23,7 @@ module.exports = {
                 user: req.user,
                 ...tokens
             });
+
         } catch (e) {
             next(e);
         }
@@ -44,9 +47,12 @@ module.exports = {
 
     logout: async (req, res, next) => {
         try {
-            const { access_token } = req;
+            const { access_token, user } = req;
+            const { email, name, last_name, surname } = user;
 
             await OAuth.deleteOne({ access_token });
+
+            await emailService.sendMail(email, emailActionTypeEnum.LOGOUT, { name, last_name, surname, count: 1 });
 
             res.sendStatus(204);
         } catch (e) {
@@ -56,9 +62,23 @@ module.exports = {
 
     logoutAllDevices: async (req, res, next) => {
         try {
-            const { _id } = req.user;
+            const { _id, email, name, last_name, surname } = req.user;
 
-            await OAuth.deleteMany({ userId: _id });
+            const { deletedCount } = await OAuth.deleteMany({ userId: _id });
+
+            await emailService.sendMail(email, emailActionTypeEnum.LOGOUT, { name, last_name, surname, count: deletedCount });
+
+            res.sendStatus(204);
+        } catch (e) {
+            next(e);
+        }
+    },
+
+    forgotPassword: async (req, res, next) => {
+        try {
+            const { email, name, last_name, surname } = req.user;
+
+            await emailService.sendMail(email, emailActionTypeEnum.FORGOT_PASSWORD, { name, last_name, surname });
 
             res.sendStatus(204);
         } catch (e) {

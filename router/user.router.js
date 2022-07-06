@@ -3,7 +3,8 @@ const router = require('express').Router();
 const { userController } = require('../controllers');
 const { commonMiddleware, userMiddleware, authMiddleware } = require('../middleware');
 
-router.get('/',
+
+router.get(`/`,
     userMiddleware.isUserQueryValid,
     userController.findUsers);
 

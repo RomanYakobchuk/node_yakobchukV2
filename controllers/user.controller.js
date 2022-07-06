@@ -1,5 +1,8 @@
-const { userService, passwordService } = require('../services');
+const { userService, passwordService, emailService, smsService } = require('../services');
 const { userPresenter } = require('../presenters/user.presenter');
+const { emailActionTypeEnum, smsActionTypeEnum } = require('../enums');
+const { smsTemplateBuilder } = require('../common');
+// const {defaults} = require("joi");
 
 module.exports = {
     findUsers: async (req, res, next) => {
@@ -16,13 +19,22 @@ module.exports = {
 
     createUser: async (req, res, next) => {
         try {
-            const hash = await passwordService.hashPassword(req.body.password);
+            const { email, password, name, last_name, surname, phone, role, auth_that_issued, date_of_issue, dataBirth, gender } = req.body;
+            // if(role === 'USER'){
 
-            const newUser = await userService.createUser({ ...req.body, password: hash });
+                const hash = await passwordService.hashPassword(password);
 
-            const userForResponse = userPresenter(newUser);
+                const newUser = await userService.createUser({ ...req.body, password: hash });
 
-            res.status(201).json(userForResponse);
+                const sms = smsTemplateBuilder[smsActionTypeEnum.WELCOME](last_name, name, surname);
+
+                await smsService.sendSMS(phone, sms);
+                await emailService.sendMail(email, emailActionTypeEnum.WELCOME, { name });
+
+                const userForResponse = userPresenter(newUser);
+
+                res.status(201).json(userForResponse);
+            // }
         } catch (e) {
             next(e);
         }
