@@ -1,7 +1,7 @@
 const router = require('express').Router();
 
 const { authController } = require('../controllers');
-const { authMiddleware } = require('../middleware');
+const { authMiddleware } = require('../middlewares');
 
 router.post('/login',
     authMiddleware.isLoginBodyValid,
@@ -19,5 +19,10 @@ router.post('/logout',
 router.post('/logoutAllDevices',
     authMiddleware.checkAccessToken,
     authController.logoutAllDevices);
+
+router.post('/forgotPassword',
+    authMiddleware.isEmailValid,
+    authMiddleware.isUserPresentByEmail,
+    authController.forgotPassword);
 
 module.exports = router;
