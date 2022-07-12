@@ -1,4 +1,4 @@
 module.exports = {
-    constant: require('./constant'),
-    config: require('./config'),
+    constants: require('./constant'),
+    configs: require('./config'),
 }

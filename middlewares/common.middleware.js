@@ -21,6 +21,7 @@ module.exports = {
             const { error, value } = validationSchema.validate(req[dataType]);
 
             if (error) {
+                console.log(`помилка у файлі common.middleware isDateValid error`)
                 return next(new CustomError(error.details[0].message));
             }
 

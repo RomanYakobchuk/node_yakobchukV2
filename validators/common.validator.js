@@ -8,4 +8,5 @@ module.exports = {
     emailValidator: Joi.string().regex(constants.EMAIL_REGEX).lowercase().trim(),
     passwordValidator: Joi.string().regex(constants.PASSWORD_REGEX).required().trim(),
     phoneValidator: Joi.string().regex(constants.PHONE_REGEX).required().trim(),
+    usernameValidator: Joi.string().alphanum().min(2).max(100)
 };

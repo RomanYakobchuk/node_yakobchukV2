@@ -7,6 +7,7 @@ const { userValidator, userQueryValidator } = require('../validators');
 router.get('/',
     commonMiddleware.isDateValid(userQueryValidator.findAll, 'query'),
     userController.findUsers);
+
 router.post('/',
     commonMiddleware.isDateValid(userValidator.newUserValidator),
     fileMiddleware.checkUserAvatar,
@@ -17,6 +18,7 @@ router.get('/:id',
     commonMiddleware.isIdValid,
     userMiddleware.isUserPresent,
     userController.getUserById);
+
 router.put('/:id',
     commonMiddleware.isIdValid,
     authMiddleware.checkAccessToken,
@@ -24,6 +26,7 @@ router.put('/:id',
     commonMiddleware.isDateValid(userValidator.updateUserValidator),
     userMiddleware.isUserPresent,
     userController.updateUserById);
+
 router.delete('/:id',
     commonMiddleware.isIdValid,
     authMiddleware.checkAccessToken,

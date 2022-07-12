@@ -1,15 +1,14 @@
-
 module.exports = {
     PORT: process.env.PORT || 5555,
-    MONGO_URL: process.env.MONGO_URL || 'http://localhost:27017/test',
+    MONGO_URL: process.env.MONGO_URL,
 
-    ACCESS_TOKEN_SECRET: process.env.ACCESS_TOKEN_SECRET || 'ats',
-    REFRESH_TOKEN_SECRET: process.env.REFRESH_TOKEN_SECRET || 'rts',
+    ACCESS_TOKEN_SECRET: process.env.ACCESS_TOKEN_SECRET,
+    REFRESH_TOKEN_SECRET: process.env.REFRESH_TOKEN_SECRET,
 
-    NO_REPLY_EMAIL: process.env.NO_REPLY_EMAIL || 'roma.yakobchu28@email.com',
-    NO_REPLY_EMAIL_PASSWORD: process.env.NO_REPLY_EMAIL_PASSWORD || 'qwerty098076',
+    NO_REPLY_EMAIL: process.env.NO_REPLY_EMAIL,
+    NO_REPLY_EMAIL_PASSWORD: process.env.NO_REPLY_EMAIL_PASSWORD,
 
-    FRONTEND_URL: process.env.FRONTEND_URL || 'https://google.com',
+    FRONTEND_URL: process.env.FRONTEND_URL,
 
     TWILIO_ACCOUNT_SID: process.env.TWILIO_ACCOUNT_SID,
     TWILIO_AUTH_TOKEN: process.env.TWILIO_AUTH_TOKEN,

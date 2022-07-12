@@ -6,6 +6,10 @@ const UserSchema = new Schema({
         required: true,
         trim: true
     },
+    username: {
+        type: String,
+        required:true,
+    },
 
     email: {
         type: String,
@@ -31,6 +35,7 @@ const UserSchema = new Schema({
     },
 
     avatar: String,
+
 }, { timestamps: true });
 
 module.exports = model('user', UserSchema);

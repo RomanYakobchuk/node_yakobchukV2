@@ -58,8 +58,8 @@ module.exports = {
         try {
             const { id } = req.params;
 
-            if (req.files?.avatar) {
-                if (req.user.avatar) {
+            if (req.files.avatar) {
+                if (!req.user.avatar) {
                     const { Location } = await s3Service.uploadFile(req.files.avatar, 'user', id);
                     req.body.avatar = Location;
                 } else {

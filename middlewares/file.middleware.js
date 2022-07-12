@@ -1,9 +1,13 @@
 const { CustomError } = require('../errors');
 const { constants } = require('../configs');
 
+
 module.exports = {
     checkUserAvatar: async (req, res, next) => {
         try {
+            console.log("-----------------")
+            console.log(req.files)
+            console.log("-----------------")
             if (!req.files?.avatar) {
                 return next();
             }
@@ -22,5 +26,5 @@ module.exports = {
         } catch (e) {
             next(e);
         }
-    },
+    }
 }
