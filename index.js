@@ -14,7 +14,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(expressFileUpload());
-
+app.use('/ping', (req, res) => res.json('PONG'));
+app.use('/qwe', (req, res) => res.json('asdasdasdasdasdasd'));
 app.use('/auth', authRouter);
 app.use('/users', userRouter);
 
