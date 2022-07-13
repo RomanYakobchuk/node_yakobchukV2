@@ -14,6 +14,7 @@ module.exports = {
             req.user = user;
             next();
         } catch (e) {
+            console.log(`isUserPresent user.middleware`)
             next(e);
         }
     },
@@ -24,9 +25,8 @@ module.exports = {
 
             const user = await userService.findOneUser({ email });
             if (user) {
-                return next(new CustomError(`User with email ${email} is exist`, 409));
+                return next(new CustomError(`User with email [ ${email} ] is exist`, 409));
             }
-
             req.user = user;
             next();
         } catch (e) {

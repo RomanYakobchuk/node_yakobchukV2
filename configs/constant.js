@@ -9,6 +9,7 @@ module.exports = {
 
     IMAGE_MIMETYPES: [
         'image/gif',
+        'image/jpg',
         'image/jpeg',
         'image/png'
     ],

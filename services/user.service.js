@@ -6,6 +6,7 @@ module.exports = {
     },
 
     findOneUser: (params = {}) => {
+
         return User.findOne(params);
     },
 

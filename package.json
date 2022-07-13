@@ -7,7 +7,7 @@
     "start:prod": "MODE=prod node ."
   },
   "dependencies": {
-    "aws-sdk": "^2.1171.0",
+    "aws-sdk": "^2.1173.0",
     "bcrypt": "^5.0.1",
     "dotenv": "^16.0.1",
     "express": "^4.18.1",
@@ -25,5 +25,18 @@
     "@types/express-fileupload": "^1.2.2",
     "@types/nodemailer": "^6.4.4",
     "@types/email-templates": "^10.0.0"
-  }
+  },
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RomanYakobchuk/node_yakobchukV2.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/RomanYakobchuk/node_yakobchukV2/issues"
+  },
+  "homepage": "https://github.com/RomanYakobchuk/node_yakobchukV2#readme",
+  "description": ""
 }

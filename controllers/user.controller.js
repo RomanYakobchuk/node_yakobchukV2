@@ -24,6 +24,7 @@ module.exports = {
             const user = await userService.createUser({ ...req.body, password: hash });
 
             const { Location } = await s3Service.uploadFile(req.files.avatar, 'user', user._id);
+            // console.log(Location)
 
             const userWithPhoto = await userService.updateOneUser({ _id: user._id }, { avatar: Location });
 
@@ -38,6 +39,7 @@ module.exports = {
 
             res.status(201).json(userForResponse);
         } catch (e) {
+            console.log(`Помилка у створенні юзера`)
             next(e);
         }
     },
@@ -58,8 +60,8 @@ module.exports = {
         try {
             const { id } = req.params;
 
-            if (req.files.avatar) {
-                if (!req.user.avatar) {
+            if (req.files && req.files.avatar) {
+                if (req.user.avatar) {
                     const { Location } = await s3Service.uploadFile(req.files.avatar, 'user', id);
                     req.body.avatar = Location;
                 } else {
